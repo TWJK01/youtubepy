@@ -31,10 +31,10 @@ def save_to_file(live_videos, filename="live_streams.txt"):
 def main():
     api_key = os.getenv("YOUTUBE_API_KEY")
     channel_ids = {
-        "華視新聞": "UCivi_f1nni7Wb2dV1jKpCgg",
-        "Muse木棉花-闔家歡": "UCgdwtyqBunlRb-i-7PnCssQ",
-        "HOP Sports": "UCY0xL8V6NzzFc2fOaQ3sGrA",
-        "超級夜總會": "UCwbtZj7FP2k6d1W_9yJPAiQ"
+        "華視新聞": "UCDCJyLpbfgeVE9iZiEam-Kg",
+        "Muse木棉花-闔家歡": "UCCPYSMEnbeepGM7RU6qxyUA",
+        "HOP Sports": "UCEenIlCU009lS0TZ8EKuKMw",
+        "超級夜總會": "UCOCcxhYGf0tRhWTL77QQHEA"
     }
     
     live_videos = get_live_videos(api_key, channel_ids)
