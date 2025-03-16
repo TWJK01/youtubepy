@@ -1,0 +1,41 @@
+name: Check YouTube Live Streams
+
+on:
+  schedule:
+    # 每5小時執行一次
+    - cron: '0 */5 * * *'
+  workflow_dispatch:
+
+jobs:
+  check_live:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install Dependencies
+        run: |
+          pip install requests
+
+      - name: Run live stream checker
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+        run: |
+          python check_live.py
+
+      - name: Commit changes if any
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git stash --include-untracked
+          git pull --rebase origin main
+          git stash pop || true
+          git add live_streams.txt
+          git commit -m "更新直播清單"
+          git push --force-with-lease
