@@ -29,6 +29,7 @@ jobs:
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
+          git pull --rebase  # 先拉取最新的遠端變更，確保同步
           git add live_streams.txt
           git diff --quiet && git diff --staged --quiet || git commit -m "更新直播列表"
           git push
