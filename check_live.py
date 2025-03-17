@@ -3,9 +3,17 @@ import requests
 import re
 import json
 import os
+import itertools
 
-# 設定你的 YouTube Data API key
-API_KEY = os.environ.get("YOUTUBE_API_KEY", "YOUR_API_KEY")
+# 設定你的多組 YouTube Data API keys
+API_KEYS = [
+    "YOUR_API_KEY_1",
+    "YOUR_API_KEY_2",
+    "YOUR_API_KEY_3"  # 你可以添加更多的 API keys
+]
+
+# 創建一個輪替器來處理多組 API keys
+api_key_cycle = itertools.cycle(API_KEYS)
 
 # 頻道分類
 CATEGORIES = {
@@ -13,8 +21,7 @@ CATEGORIES = {
         "華視新聞": "https://www.youtube.com/@CtsTw/streams",
     },
     "少兒,#genre#": {
-        "Muse木棉花-TW": "https://www.youtube.com/@MuseTW/streams",
-        "Muse木棉花-闔家歡": "https://www.youtube.com/@Muse_Family/streams",
+        "Muse木棉花-闔家歡": "https://www.youtube.com/@Muse_Family/streams"        
     }
 }
 
@@ -22,7 +29,6 @@ CATEGORIES = {
 live_results = {}
 
 def extract_video_ids(data_obj, collected):
-    """遞迴提取所有的視頻ID"""
     if isinstance(data_obj, dict):
         if "videoId" in data_obj:
             collected.add(data_obj["videoId"])
@@ -33,68 +39,51 @@ def extract_video_ids(data_obj, collected):
             extract_video_ids(item, collected)
 
 def get_live_video_info(video_id):
-    """通過 YouTube API 獲取直播視頻的詳細信息"""
     api_url = "https://www.googleapis.com/youtube/v3/videos"
+    # 使用輪替器獲取當前 API key
+    api_key = next(api_key_cycle)
+    
     params = {
         "id": video_id,
         "part": "snippet,liveStreamingDetails",
-        "key": API_KEY
+        "key": api_key
     }
-    try:
-        response = requests.get(api_url, params=params)
-        response.raise_for_status()  # 如果請求不成功，會觸發異常
-        data = response.json()
-        if "items" in data and len(data["items"]) > 0:
-            item = data["items"][0]
-            if item["snippet"].get("liveBroadcastContent") == "live":
-                return item
-    except Exception as e:
-        print(f"獲取視頻 {video_id} 信息失敗: {e}")
+    
+    response = requests.get(api_url, params=params)
+    if response.status_code != 200:
+        print(f"API 請求失敗，狀態碼: {response.status_code}")
+        return None
+    
+    data = response.json()
+    if "items" in data and len(data["items"]) > 0:
+        item = data["items"][0]
+        if item["snippet"].get("liveBroadcastContent") == "live":
+            return item
     return None
-
-def extract_video_id_from_live_url(url):
-    """從直播 URL 提取視頻 ID"""
-    m = re.search(r"youtube\.com/live/([a-zA-Z0-9_-]+)", url)
-    if m:
-        return m.group(1)
-    return None
-
-def extract_live_urls_from_page(html):
-    """從 YouTube 頁面中提取所有的 live URL"""
-    live_urls = set()
-    # 提取所有的 youtube.com/live/ URL
-    live_urls.update(re.findall(r'https://www\.youtube\.com/live/[a-zA-Z0-9_-]+', html))
-    return live_urls
 
 def process_channel(category, channel_name, url):
-    """處理指定頻道，抓取並儲存所有的直播內容"""
     print(f"處理頻道：{channel_name}")
     headers = {"User-Agent": "Mozilla/5.0"}
     try:
         resp = requests.get(url, headers=headers, timeout=10)
         if resp.status_code != 200:
-            print(f"無法訪問頻道：{channel_name}")
             return
-    except Exception as e:
-        print(f"請求頻道 {channel_name} 時發生錯誤: {e}")
+    except Exception:
         return
 
     html = resp.text
     m = re.search(r"var ytInitialData = ({.*?});", html)
     if not m:
-        print(f"無法提取數據：{channel_name}")
         return
 
     try:
         data = json.loads(m.group(1))
-    except Exception as e:
-        print(f"解析數據時出錯：{channel_name}, 錯誤信息：{e}")
+    except Exception:
         return
 
     video_ids = set()
     extract_video_ids(data, video_ids)
 
-    # 優化提取多個頁面視頻的方式，保證不漏掉直播
     for vid in video_ids:
         info = get_live_video_info(vid)
         if info:
@@ -104,22 +93,6 @@ def process_channel(category, channel_name, url):
                 live_results[category] = []
             live_results[category].append(f"{title},{video_url}")
             print(f"找到直播：{title} - {video_url}")
-    
-    # 從頁面 HTML 中提取所有的 live URL
-    live_urls = extract_live_urls_from_page(html)
-    
-    # 處理所有從頁面中提取到的 live URL
-    for live_url in live_urls:
-        video_id = extract_video_id_from_live_url(live_url)
-        if video_id:
-            info = get_live_video_info(video_id)
-            if info:
-                title = info["snippet"].get("title", "無標題")
-                video_url = f"https://www.youtube.com/watch?v={video_id}"
-                if category not in live_results:
-                    live_results[category] = []
-                live_results[category].append(f"{title},{video_url}")
-                print(f"找到直播：{title} - {video_url}")
 
 def main():
     for category, channels in CATEGORIES.items():
