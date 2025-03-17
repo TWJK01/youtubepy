@@ -1,77 +1,106 @@
-import os
-import time
 import requests
+import re
+import json
+import os
 
-# YouTube Data API Key
-API_KEY = 'YOUR_API_KEY'
+API_KEY = os.environ.get("YOUTUBE_API_KEY", "YOUR_API_KEY")
 
-# YouTube 頻道及其對應的分類
-channels = {
-    "分類一": {
-        "台灣地震監視": "https://www.youtube.com/@台灣地震監視/streams",
-        "台視新聞": "https://www.youtube.com/@TTV_NEWS/streams",
-        "中視新聞": "https://www.youtube.com/@chinatvnews/streams",
-        "中視新聞 HD": "https://www.youtube.com/@twctvnews/streams",
+# 分類頻道對應表
+CATEGORIES = {
+    "分類一,#genre#": {
         "華視新聞": "https://www.youtube.com/@CtsTw/streams",
-        "民視新聞網": "https://www.youtube.com/@FTV_News/streams",
-        # 更多頻道...
+        "中天新聞CtiNews": "https://www.youtube.com/@中天新聞CtiNews/streams"
     },
-    "分類二": {
+    "分類二,#genre#": {
         "MIT台灣誌": "https://www.youtube.com/@ctvmit/streams",
-        "大陸尋奇": "https://www.youtube.com/@ctvchinatv/streams",
-        "八大電視娛樂百分百": "https://www.youtube.com/@GTV100ENTERTAINMENT/streams",
-        "三立娛樂星聞": "https://www.youtube.com/@star_setn/streams",
-        # 更多頻道...
+        "大陸尋奇": "https://www.youtube.com/@ctvchinatv/streams"
+    },
+    "分類三,#genre#": {
+        "台視時光機": "https://www.youtube.com/@TTVClassic/streams",
+        "中視經典戲劇": "https://www.youtube.com/@ctvdrama_classic/streams"
+    },
+    "分類四,#genre#": {
+        "壹電視NEXT TV": "https://www.youtube.com/@%E5%A3%B9%E9%9B%BB%E8%A6%96NEXTTV/streams",
+        "庶民大頭家": "https://www.youtube.com/@庶民大頭家/streams"
+    },
+    "分類五,#genre#": {
+        "YOYOTV": "https://www.youtube.com/@yoyotvebc/streams",
+        "momokids親子台": "https://www.youtube.com/@momokidsYT/streams"
+    },
+    "分類六,#genre#": {
+        "愛爾達體育家族": "https://www.youtube.com/@ELTASPORTSHD/streams",
+        "緯來體育台": "https://www.youtube.com/@vlsports/streams",
+        "HOP Sports": "https://www.youtube.com/@HOPSports/streams"
+    },
+    "分類七,#genre#": {
+        "國會頻道": "https://www.youtube.com/@parliamentarytv/streams"
     }
 }
 
-# 儲存直播網址的文件夾和檔案路徑
-output_folder = '直播網址'
-if not os.path.exists(output_folder):
-    os.makedirs(output_folder)
+# 儲存分類直播結果
+live_results = {category: [] for category in CATEGORIES}
 
-# 根據頻道網址抓取直播視頻
-def get_live_videos(channel_url):
-    # 使用 YouTube Data API 查詢頻道的視頻列表，這裡以 'search' API 為例
-    base_url = "https://www.googleapis.com/youtube/v3/search"
+def get_live_video_info(video_id):
+    api_url = "https://www.googleapis.com/youtube/v3/videos"
     params = {
-        'key': API_KEY,
-        'channelId': channel_url.split('@')[1],  # 提取頻道ID
-        'part': 'snippet',
-        'eventType': 'live',
-        'type': 'video'
+        "id": video_id,
+        "part": "snippet,liveStreamingDetails",
+        "key": API_KEY
     }
-    response = requests.get(base_url, params=params)
-    return response.json()
+    response = requests.get(api_url, params=params)
+    if response.status_code != 200:
+        return None
+    data = response.json()
+    if "items" in data and data["items"]:
+        item = data["items"][0]
+        if item["snippet"].get("liveBroadcastContent") == "live":
+            return item
+    return None
 
-# 寫入直播網址到檔案
-def write_to_file(category, videos):
-    file_path = os.path.join(output_folder, "直播網址.txt")
-    with open(file_path, 'a', encoding='utf-8') as file:
-        file.write(f"{category},#genre#\n")
-        for video in videos:
-            title = video['snippet']['title']
-            video_url = f"https://www.youtube.com/watch?v={video['id']['videoId']}"
-            file.write(f"{title},{video_url}\n")
-
-# 主程式，抓取每個分類的頻道直播視頻
-def scrape_live_videos():
-    for category, channels_dict in channels.items():
-        all_videos = []
-        for channel_name, channel_url in channels_dict.items():
-            print(f"正在抓取 {channel_name} 的直播視頻...")
-            videos = get_live_videos(channel_url)
-            if 'items' in videos and videos['items']:
-                all_videos.extend(videos['items'])
-            else:
-                print(f"{channel_name} 沒有找到直播視頻。")
-        
-        # 如果該分類有抓到視頻，則寫入檔案
-        if all_videos:
-            write_to_file(category, all_videos)
+def process_channel(category, channel_name, url):
+    print(f"處理頻道：{channel_name}")
+    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/115.0 Safari/537.36"}
+    try:
+        resp = requests.get(url, headers=headers, timeout=10)
+        if resp.status_code != 200:
+            print(f"取得 {url} 失敗，狀態碼：{resp.status_code}")
+            return
+    except Exception as e:
+        print(f"Error fetching {url}: {e}")
+        return
     
-# 定時抓取，這裡設置每 2 小時執行一次
-while True:
-    scrape_live_videos()
-    print("已完成一次抓取，2 小時後再次執行...")
-    time.sleep(2 * 60 * 60)  # 2 小時
+    html = resp.text
+    m = re.search(r"ytInitialData\s*=\s*({.*?});", html)
+    if not m:
+        print("找不到 ytInitialData")
+        return
+    
+    try:
+        data = json.loads(m.group(1))
+    except Exception as e:
+        print(f"JSON 解析錯誤: {e}")
+        return
+    
+    video_ids = set(re.findall(r'"videoId":"(\w{11})"', html))
+    for vid in video_ids:
+        info = get_live_video_info(vid)
+        if info:
+            title = info["snippet"].get("title", "無標題")
+            video_url = f"https://www.youtube.com/watch?v={vid}"
+            live_results[category].append(f"{channel_name},{video_url}")
+            print(f"找到直播：{title} - {video_url}")
+
+def main():
+    for category, channels in CATEGORIES.items():
+        for channel_name, url in channels.items():
+            process_channel(category, channel_name, url)
+    
+    with open("live_streams.txt", "w", encoding="utf-8") as f:
+        for category, results in live_results.items():
+            if results:
+                f.write(f"{category}\n")
+                f.write("\n".join(results) + "\n\n")
+    print("更新完成。")
+
+if __name__ == "__main__":
+    main()
