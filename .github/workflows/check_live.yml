@@ -43,5 +43,7 @@ jobs:
           git pull --rebase origin main
           git stash pop || true
           git add live_streams.txt
-          git commit -m "更新直播清單"
+
+          # 檢查是否有更改，若有則提交
+          git diff --exit-code || git commit -m "更新直播清單"
           git push --force-with-lease
