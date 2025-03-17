@@ -52,6 +52,20 @@ def get_live_video_info(video_id):
         print(f"獲取視頻 {video_id} 信息失敗: {e}")
     return None
 
+def extract_video_id_from_live_url(url):
+    """從直播 URL 提取視頻 ID"""
+    m = re.search(r"youtube\.com/live/([a-zA-Z0-9_-]+)", url)
+    if m:
+        return m.group(1)
+    return None
+
+def extract_live_urls_from_page(html):
+    """從 YouTube 頁面中提取所有的 live URL"""
+    live_urls = set()
+    # 提取所有的 youtube.com/live/ URL
+    live_urls.update(re.findall(r'https://www\.youtube\.com/live/[a-zA-Z0-9_-]+', html))
+    return live_urls
+
 def process_channel(category, channel_name, url):
     """處理指定頻道，抓取並儲存所有的直播內容"""
     print(f"處理頻道：{channel_name}")
@@ -90,6 +104,22 @@ def process_channel(category, channel_name, url):
                 live_results[category] = []
             live_results[category].append(f"{title},{video_url}")
             print(f"找到直播：{title} - {video_url}")
+    
+    # 從頁面 HTML 中提取所有的 live URL
+    live_urls = extract_live_urls_from_page(html)
+    
+    # 處理所有從頁面中提取到的 live URL
+    for live_url in live_urls:
+        video_id = extract_video_id_from_live_url(live_url)
+        if video_id:
+            info = get_live_video_info(video_id)
+            if info:
+                title = info["snippet"].get("title", "無標題")
+                video_url = f"https://www.youtube.com/watch?v={video_id}"
+                if category not in live_results:
+                    live_results[category] = []
+                live_results[category].append(f"{title},{video_url}")
+                print(f"找到直播：{title} - {video_url}")
 
 def main():
     for category, channels in CATEGORIES.items():
