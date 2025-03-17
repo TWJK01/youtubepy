@@ -31,11 +31,28 @@ jobs:
 
       - name: Commit changes if any
         run: |
+          # 配置 Git 使用者資訊
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git stash --include-untracked
+          
+          # 檢查是否有更動
+          git status
+          
+          # 如果有未追蹤檔案，則先暫存並更新
+          git stash --include-untracked || true
+
+          # 拉取最新的遠端主分支並保持最新
           git pull --rebase origin main
+
+          # 恢復 stash 的變更
           git stash pop || true
-          git add live_streams.txt
-          git commit -m "更新直播清單"
-          git push --force-with-lease
+
+          # 檢查是否有變更
+          git diff --exit-code
+          if [ $? -ne 0 ]; then
+            git add live_streams.txt
+            git commit -m "更新直播清單"
+            git push --force-with-lease
+          else
+            echo "No changes to commit"
+          fi
