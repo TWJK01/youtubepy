@@ -4,55 +4,45 @@ on:
   schedule:
     # 每5小時執行一次
     - cron: '0 */5 * * *'
-  workflow_dispatch:
+  workflow_dispatch:  # 允許手動觸發
 
 jobs:
   check_live:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. 檢出代碼
       - name: Checkout Repository
         uses: actions/checkout@v3
 
+      # 2. 設置 Python 環境
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
 
+      # 3. 安裝依賴項
       - name: Install Dependencies
         run: |
           pip install requests
 
+      # 4. 運行檢查 YouTube 直播的腳本
       - name: Run live stream checker
         env:
-          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          YOUTUBE_API_KEY_1: ${{ secrets.YOUTUBE_API_KEY_1 }}
+          YOUTUBE_API_KEY_2: ${{ secrets.YOUTUBE_API_KEY_2 }}
+          YOUTUBE_API_KEY_3: ${{ secrets.YOUTUBE_API_KEY_3 }}
         run: |
           python check_live.py
 
+      # 5. 如果有更改，提交並推送更改
       - name: Commit changes if any
         run: |
-          # 配置 Git 使用者資訊
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          
-          # 檢查是否有更動
-          git status
-          
-          # 如果有未追蹤檔案，則先暫存並更新
-          git stash --include-untracked || true
-
-          # 拉取最新的遠端主分支並保持最新
+          git stash --include-untracked
           git pull --rebase origin main
-
-          # 恢復 stash 的變更
           git stash pop || true
-
-          # 檢查是否有變更
-          git diff --exit-code
-          if [ $? -ne 0 ]; then
-            git add live_streams.txt
-            git commit -m "更新直播清單"
-            git push --force-with-lease
-          else
-            echo "No changes to commit"
-          fi
+          git add live_streams.txt
+          git commit -m "更新直播清單"
+          git push --force-with-lease
