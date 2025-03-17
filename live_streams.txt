@@ -1,76 +1,48 @@
 分類一,#genre#
-中天新聞CtiNews,https://www.youtube.com/watch?v=QykvOWQ9fzk
+地震即時警報與監測直播｜華視公眾安全資訊觀測站,https://www.youtube.com/watch?v=7lxXN3zIr-I
+【🔴LIVE直播中】"58%不挺大罷免"游盈隆揭關鍵藍推"反廢死.反戒嚴"公投抗綠｜川普:"週二通話普丁"內容曝光金賽綸家屬預告"直播秀鐵證"｜簡至豪 報新聞 20250317@中天新聞CtiNews,https://www.youtube.com/watch?v=QykvOWQ9fzk
 
 分類二,#genre#
-MIT台灣誌,https://www.youtube.com/watch?v=zt9tSbiw4sg
-大陸尋奇,https://www.youtube.com/watch?v=UtOw97Ba8hE
+🔴【LIVE不斷電】《MIT台灣誌》私房景點想去哪 🤠秘境一次看到飽 😎｜24小時不斷電直播｜Made In Taiwan 24 Hours Live,https://www.youtube.com/watch?v=zt9tSbiw4sg
+【LIVE】《大陸尋奇》跨越五千年的歷史遺跡📸尋遍大陸各地奇風異俗、人文軼事🌏｜24小時不斷電直播｜Wonders of China 24 Hours Live,https://www.youtube.com/watch?v=UtOw97Ba8hE
 
 分類三,#genre#
-<<<<<<< Updated upstream
-台視時光機,https://www.youtube.com/watch?v=0jKDILqxasY
-台視時光機,https://www.youtube.com/watch?v=zwSfP8GG7hQ
-台視時光機,https://www.youtube.com/watch?v=WY0oXLGYrZg
-台視時光機,https://www.youtube.com/watch?v=MEdYt10b2mc
-台視時光機,https://www.youtube.com/watch?v=8HFAd0DMEcM
-=======
-台視時光機,https://www.youtube.com/watch?v=8HFAd0DMEcM
-台視時光機,https://www.youtube.com/watch?v=MEdYt10b2mc
-台視時光機,https://www.youtube.com/watch?v=zwSfP8GG7hQ
-台視時光機,https://www.youtube.com/watch?v=WY0oXLGYrZg
-台視時光機,https://www.youtube.com/watch?v=0jKDILqxasY
->>>>>>> Stashed changes
-中視經典戲劇,https://www.youtube.com/watch?v=jkF7cseHZ5s
-中視經典戲劇,https://www.youtube.com/watch?v=vdGQsHqYvlo
+🔴#蛇年大吉！一起來看 【#新白娘子傳奇】🐍🐍🐍 #趙雅芝、#葉童、#陳美琪,https://www.youtube.com/watch?v=MEdYt10b2mc
+🔴1997年 台視連續劇《根》 #陳亞蘭 #俞小凡 #張晨光 #林心如 #馬如風 #陳莎莉 #王中皇 #艾偉 #賀軍政 #朱慧珍 #楊烈,https://www.youtube.com/watch?v=0jKDILqxasY
+🔴《神機妙算劉伯溫》全集馬拉松！再現神威！| TTV Time Machine (Live Streaming ),https://www.youtube.com/watch?v=8HFAd0DMEcM
+🔴挑戰你的極限！精彩類戲劇一次看個夠！【#玫瑰瞳鈴眼】【#紫色蔓陀蘿】【#蝴蝶密碼】【#台灣真女人】#台灣風雲【#藍色蜘蛛網】| TTV Time Machine (Live Streaming ),https://www.youtube.com/watch?v=zwSfP8GG7hQ
+🔴1980年 經典歌仔戲 《薛平貴》 #楊麗花 #許秀年 #郭美珠 #司馬玉嬌 #青蓉 #高玉珊 #李如鄰 #小鳳仙 #陳聰明 #洪秀美 #石文戶 #吳梅芳 #王琦 #陸一蟬,https://www.youtube.com/watch?v=WY0oXLGYrZg
+🔴1989年 楊佩佩製作《春去春又回》，1990年獲得第廿五屆金鐘獎「最佳連續劇」#劉松仁、#夏文汐、#馬景濤、#沈孟生、#林秀玲、#陳思萍、#李立群、#雷鳴、#車軒、#青­山、#尹寶蓮,https://www.youtube.com/watch?v=-3KmMw_2bBY
+🔴【過年檔期來啦！】現在開始看光陰的故事，就會在除夕夜跟陳怡蓉、賴雅妍一起吃年夜飯🧨CTV 中視戲劇｜24小時不斷電直播｜ Ctvdrama Classic 24 Hours Live｜,https://www.youtube.com/watch?v=jkF7cseHZ5s
+【緬懷瓊瑤女士】 經典戲劇不斷電一次看 #雪珂 #望夫崖 #青青河邊草 #梅花三弄 #梅花烙 #鬼丈夫 #水雲間,https://www.youtube.com/watch?v=vdGQsHqYvlo
+
+分類四,#genre#
+《庶民大頭家》綠下鄉喊"人民頭家" 罷免狙擊35"民代" 藍酸:背離民意誰是頭家? 2025.03.17【廣告時間不停機】,https://www.youtube.com/watch?v=mSI-E4xwoVw
 
 分類五,#genre#
-YOYOTV,https://www.youtube.com/watch?v=M_72xNHoo58
-<<<<<<< Updated upstream
-momokids親子台,https://www.youtube.com/watch?v=WyWWNSX6B9I
-momokids親子台,https://www.youtube.com/watch?v=5yDiJqBO7Ds
-momokids親子台,https://www.youtube.com/watch?v=tVKyWeA2zfg
-=======
-momokids親子台,https://www.youtube.com/watch?v=tVKyWeA2zfg
-momokids親子台,https://www.youtube.com/watch?v=5yDiJqBO7Ds
-momokids親子台,https://www.youtube.com/watch?v=WyWWNSX6B9I
->>>>>>> Stashed changes
+YOYO金曲✕熱門卡通✨24HR不間斷｜LIVE｜唱跳｜金曲｜兒歌｜MV｜Kids Songs,https://www.youtube.com/watch?v=M_72xNHoo58
+安全小寶貝🚗💨安全好重要！交通安全知識不能少⚠️3-5歲學 齡前幼兒 | 情境劇 | 幼兒兒童 | 教育故事 | #momo親子台,https://www.youtube.com/watch?v=5yDiJqBO7Ds
+歡樂谷【專輯1-13】 ► 132首MV合輯｜歡樂歌曲不間斷｜帶小孩、塞車神曲｜可愛動畫｜兒歌童謠｜兒童律動｜幼兒舞蹈｜小孩音樂曲目｜帶動唱歌曲｜唱歌跳舞｜電視台【親子台｜官方HD】momokids,https://www.youtube.com/watch?v=WyWWNSX6B9I
+#MOMO這一家 S3 ►【全集數 馬拉松直播】歡樂不間斷｜第三季｜家庭校園喜劇｜趣味短劇｜兒童電視節目【親子台｜官方HD網路短版】#momokids,https://www.youtube.com/watch?v=tVKyWeA2zfg
 
 分類六,#genre#
-HOP Sports,https://www.youtube.com/watch?v=JaGd4Yy_xjA
+🔴 ᴴᴰ HOP Sports 24 小時｜Taiwan HOP Sports 24h Marathon Talk｜台湾 HOP スポーツ 24 時間｜대만 스포츠 채팅 @HOPSports,https://www.youtube.com/watch?v=JaGd4Yy_xjA
 
 分類七,#genre#
-<<<<<<< Updated upstream
-國會頻道,https://www.youtube.com/watch?v=yUx5lB4mhZk
-國會頻道,https://www.youtube.com/watch?v=4HysYHJ6GkY
-國會頻道,https://www.youtube.com/watch?v=KUhidt89DVo
-國會頻道,https://www.youtube.com/watch?v=1s_XWr7KzVE
-國會頻道,https://www.youtube.com/watch?v=IvAXtzx5cUI
-國會頻道,https://www.youtube.com/watch?v=KyHM5yvcLU4
-國會頻道,https://www.youtube.com/watch?v=Af0TFVbxvAQ
-國會頻道,https://www.youtube.com/watch?v=Qo9QwuCpV3s
-國會頻道,https://www.youtube.com/watch?v=vGX0bMBVa4k
-國會頻道,https://www.youtube.com/watch?v=xfikIGtkQeA
-國會頻道,https://www.youtube.com/watch?v=tDg3bJFYLzI
-國會頻道,https://www.youtube.com/watch?v=nkejc54RyDU
-國會頻道,https://www.youtube.com/watch?v=Cidl9JoRtGk
-國會頻道,https://www.youtube.com/watch?v=DdUWlWZVOi8
-國會頻道,https://www.youtube.com/watch?v=Lj8OWF6nzcg
-國會頻道,https://www.youtube.com/watch?v=teud7KwyEPw
-=======
-國會頻道,https://www.youtube.com/watch?v=IvAXtzx5cUI
-國會頻道,https://www.youtube.com/watch?v=Cidl9JoRtGk
-國會頻道,https://www.youtube.com/watch?v=1s_XWr7KzVE
-國會頻道,https://www.youtube.com/watch?v=teud7KwyEPw
-國會頻道,https://www.youtube.com/watch?v=nkejc54RyDU
-國會頻道,https://www.youtube.com/watch?v=4HysYHJ6GkY
-國會頻道,https://www.youtube.com/watch?v=Af0TFVbxvAQ
-國會頻道,https://www.youtube.com/watch?v=vGX0bMBVa4k
-國會頻道,https://www.youtube.com/watch?v=KyHM5yvcLU4
-國會頻道,https://www.youtube.com/watch?v=Lj8OWF6nzcg
-國會頻道,https://www.youtube.com/watch?v=KUhidt89DVo
-國會頻道,https://www.youtube.com/watch?v=tDg3bJFYLzI
-國會頻道,https://www.youtube.com/watch?v=yUx5lB4mhZk
-國會頻道,https://www.youtube.com/watch?v=Qo9QwuCpV3s
-國會頻道,https://www.youtube.com/watch?v=xfikIGtkQeA
-國會頻道,https://www.youtube.com/watch?v=DdUWlWZVOi8
->>>>>>> Stashed changes
+財政委員會 | 國會頻道-立法院議事轉播,https://www.youtube.com/watch?v=Cidl9JoRtGk
+經費稽核委員會 | 國會頻道-立法院議事轉播,https://www.youtube.com/watch?v=nkejc54RyDU
+國會頻道１ | 國會頻道-立法院議事轉播,https://www.youtube.com/watch?v=4HysYHJ6GkY
+交通委員會 | 國會頻道-立法院議事轉播,https://www.youtube.com/watch?v=teud7KwyEPw
+立法院會議 | 國會頻道-立法院議事轉播,https://www.youtube.com/watch?v=tDg3bJFYLzI
+經濟委員會 | 國會頻道-立法院議事轉播,https://www.youtube.com/watch?v=xfikIGtkQeA
+國家發展基金不當投資暨管理失職調查委員會 | 國會頻道-立法院議事轉播,https://www.youtube.com/watch?v=1s_XWr7KzVE
+內政委員會 | 國會頻道-立法院議事轉播,https://www.youtube.com/watch?v=vGX0bMBVa4k
+程序委員會 | 國會頻道-立法院議事轉播,https://www.youtube.com/watch?v=IvAXtzx5cUI
+黨團協商 | 國會頻道-立法院議事轉播,https://www.youtube.com/watch?v=yUx5lB4mhZk
+教育及文化委員會 | 國會頻道-立法院議事轉播,https://www.youtube.com/watch?v=Qo9QwuCpV3s
+國會頻道２ | 國會頻道-立法院議事轉播,https://www.youtube.com/watch?v=Lj8OWF6nzcg
+社會福利及衛生環境委員會 | 國會頻道-立法院議事轉播,https://www.youtube.com/watch?v=DdUWlWZVOi8
+司法及法制委員會 | 國會頻道-立法院議事轉播,https://www.youtube.com/watch?v=KUhidt89DVo
+紀律委員會 | 國會頻道-立法院議事轉播,https://www.youtube.com/watch?v=KyHM5yvcLU4
+外交及國防委員會 | 國會頻道-立法院議事轉播,https://www.youtube.com/watch?v=Af0TFVbxvAQ
 
