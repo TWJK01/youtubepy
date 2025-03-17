@@ -8,8 +8,7 @@ import itertools
 # 設定你的多組 YouTube Data API keys
 API_KEYS = [
     "YOUR_API_KEY_1",
-    "YOUR_API_KEY_2",
-    "YOUR_API_KEY_3"  # 你可以添加更多的 API keys
+    "YOUR_API_KEY_2"  # 你可以添加更多的 API keys
 ]
 
 # 創建一個輪替器來處理多組 API keys
