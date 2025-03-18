@@ -1,33 +1,37 @@
 #!/usr/bin/env python
 import requests
-import re
 import json
 import os
 import itertools
+import re
 
-# 設定你的多組 YouTube Data API keys
+# 輪流使用 API Key，防止達到 YouTube API 限制
 API_KEYS = [
-    "YOUR_API_KEY_1",
-    "YOUR_API_KEY_2"  # 你可以添加更多的 API keys
+    os.getenv("YOUTUBE_API_KEY_1"),
+    os.getenv("YOUTUBE_API_KEY_2"),
 ]
 
-# 創建一個輪替器來處理多組 API keys
 api_key_cycle = itertools.cycle(API_KEYS)
 
-# 頻道分類
+def get_next_api_key():
+    """取得下一個 API Key"""
+    return next(api_key_cycle)
+
+# 定義要爬取的 YouTube 頻道直播頁面
 CATEGORIES = {
-    "台灣,#genre#": {
+    "台灣新聞": {
         "華視新聞": "https://www.youtube.com/@CtsTw/streams",
     },
-    "少兒,#genre#": {
-        "Muse木棉花-闔家歡": "https://www.youtube.com/@Muse_Family/streams"        
+    "動漫": {
+        "Muse木棉花": "https://www.youtube.com/@Muse_Family/streams"
     }
 }
 
-# 用來儲存直播結果
+# 用來存儲直播結果
 live_results = {}
 
 def extract_video_ids(data_obj, collected):
+    """解析 YouTube 頁面 JSON，提取 videoId"""
     if isinstance(data_obj, dict):
         if "videoId" in data_obj:
             collected.add(data_obj["videoId"])
@@ -38,21 +42,17 @@ def extract_video_ids(data_obj, collected):
             extract_video_ids(item, collected)
 
 def get_live_video_info(video_id):
+    """查詢 YouTube API 確認直播狀態"""
+    api_key = get_next_api_key()
     api_url = "https://www.googleapis.com/youtube/v3/videos"
-    # 使用輪替器獲取當前 API key
-    api_key = next(api_key_cycle)
-    
     params = {
         "id": video_id,
         "part": "snippet,liveStreamingDetails",
         "key": api_key
     }
-    
     response = requests.get(api_url, params=params)
     if response.status_code != 200:
-        print(f"API 請求失敗，狀態碼: {response.status_code}")
         return None
-    
     data = response.json()
     if "items" in data and len(data["items"]) > 0:
         item = data["items"][0]
@@ -61,6 +61,7 @@ def get_live_video_info(video_id):
     return None
 
 def process_channel(category, channel_name, url):
+    """處理單一 YouTube 頻道頁面"""
     print(f"處理頻道：{channel_name}")
     headers = {"User-Agent": "Mozilla/5.0"}
     try:
@@ -94,6 +95,7 @@ def process_channel(category, channel_name, url):
             print(f"找到直播：{title} - {video_url}")
 
 def main():
+    """執行主程式，遍歷所有頻道"""
     for category, channels in CATEGORIES.items():
         for channel_name, url in channels.items():
             process_channel(category, channel_name, url)
