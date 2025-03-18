@@ -2,48 +2,41 @@ name: Check YouTube Live Streams
 
 on:
   schedule:
-    # 每5小時執行一次
-    - cron: '0 */5 * * *'
-  workflow_dispatch:  # 允許手動觸發
+    - cron: '0 */5 * * *'  # 每 5 小時執行一次
+  workflow_dispatch:  # 允許手動執行
 
 jobs:
   check_live:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. 檢出代碼
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      # 2. 設置 Python 環境
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.x'
+          python-version: '3.9'
 
-      # 3. 安裝依賴項
       - name: Install Dependencies
-        run: |
-          pip install requests
+        run: pip install -r requirements.txt
 
-      # 4. 運行檢查 YouTube 直播的腳本
       - name: Run live stream checker
         env:
           YOUTUBE_API_KEY_1: ${{ secrets.YOUTUBE_API_KEY_1 }}
           YOUTUBE_API_KEY_2: ${{ secrets.YOUTUBE_API_KEY_2 }}
-        run: |
-          python check_live.py
+        run: python check_live.py
 
-      # 5. 如果有更改，提交並推送更改
       - name: Commit changes if any
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git stash --include-untracked
-          git pull --rebase origin main
-          git stash pop || true
-          git add live_streams.txt
 
-          # 檢查是否有更改，若有則提交
-          git diff --exit-code || git commit -m "更新直播清單"
-          git push --force-with-lease
+          if git diff --quiet && git diff --staged --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          git add live_streams.txt
+          git commit -m "更新直播清單"
+          git push
