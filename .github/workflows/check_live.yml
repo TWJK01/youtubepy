@@ -32,6 +32,9 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
+          # 檢查並暫存未提交的更改
+          git add -A
+
           # 檢查是否有變更
           if git diff --quiet live_streams.txt && git diff --staged --quiet live_streams.txt; then
             echo "No changes to commit"
@@ -39,10 +42,13 @@ jobs:
           fi
 
           # 確保遠端變更與本地同步，避免衝突
-          git pull --rebase origin main || (echo "Pull failed, resetting to remote main" && git reset --hard origin/main)
+          git pull --rebase origin main || (echo "Pull failed, stashing changes and resetting to remote main" && git stash && git reset --hard origin/main)
 
           git add live_streams.txt
           git commit -m "更新直播清單"
 
           # 使用 --force-with-lease 確保不會覆蓋其他提交
-          git push --force-with-lease || (echo "Push failed, please check the issue" && exit 1)
+          git push --force-with-lease
+
+          # 如果有暫存的變更，恢復
+          git stash pop || echo "No stashed changes"
