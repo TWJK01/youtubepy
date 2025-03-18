@@ -112,6 +112,15 @@ def main():
             for line in streams:
                 f.write(line + "\n")
             f.write("\n")
+
+    # 自動提交更新
+    os.system("git config --global user.name 'github-actions[bot]'")
+    os.system("git config --global user.email 'github-actions[bot]@users.noreply.github.com'")
+    os.system("git pull --rebase origin main || git reset --hard origin/main")
+    os.system("git add live_streams.txt")
+    os.system("git commit -m '更新直播清單'")
+    os.system("git push --force-with-lease")
+    
     print("更新完成。")
 
 if __name__ == "__main__":
