@@ -32,11 +32,17 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
+          # 檢查是否有變更
           if git diff --quiet && git diff --staged --quiet; then
             echo "No changes to commit"
             exit 0
           fi
 
+          # 確保遠端變更與本地同步，避免衝突
+          git pull --rebase origin main || git reset --hard origin/main
+
           git add live_streams.txt
           git commit -m "更新直播清單"
-          git push
+
+          # 使用 --force-with-lease 確保不會覆蓋其他提交
+          git push --force-with-lease
