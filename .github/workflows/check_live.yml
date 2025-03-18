@@ -33,16 +33,16 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
           # 檢查是否有變更
-          if git diff --quiet && git diff --staged --quiet; then
+          if git diff --quiet live_streams.txt && git diff --staged --quiet live_streams.txt; then
             echo "No changes to commit"
             exit 0
           fi
 
           # 確保遠端變更與本地同步，避免衝突
-          git pull --rebase origin main || git reset --hard origin/main
+          git pull --rebase origin main || (echo "Pull failed, resetting to remote main" && git reset --hard origin/main)
 
           git add live_streams.txt
           git commit -m "更新直播清單"
 
           # 使用 --force-with-lease 確保不會覆蓋其他提交
-          git push --force-with-lease
+          git push --force-with-lease || (echo "Push failed, please check the issue" && exit 1)
