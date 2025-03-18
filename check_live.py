@@ -14,27 +14,25 @@ API_KEYS = [
 api_key_cycle = itertools.cycle(API_KEYS)
 
 def get_next_api_key():
-    """取得下一個 API Key
-    """
+    """取得下一個 API Key"""
     return next(api_key_cycle)
 
 # 定義要爬取的 YouTube 頻道直播頁面
 CATEGORIES = {
     "台灣,#genre#": {
-        "8world": "https://www.youtube.com/@8worldSG/streams",
-        "台視": "https://www.youtube.com/watch?v=uDqQo8a7Xmk&rco=1&ab_channel=TTVLIVE%E5%8F%B0%E8%A6%96%E7%9B%B4%E6%92%AD"
+        "8world": "https://www.youtube.com/@8worldSG/streams"
     },
     "綜藝,#genre#": {
         "戲說台灣": "https://www.youtube.com/@TWStoryTV/streams"	
     },
+
 }
 
 # 用來存儲直播結果
 live_results = {}
 
 def extract_video_ids(data_obj, collected):
-    """解析 YouTube 頁面 JSON，提取 videoId
-    """
+    """解析 YouTube 頁面 JSON，提取 videoId"""
     if isinstance(data_obj, dict):
         if "videoId" in data_obj:
             collected.add(data_obj["videoId"])
@@ -45,8 +43,7 @@ def extract_video_ids(data_obj, collected):
             extract_video_ids(item, collected)
 
 def get_live_video_info(video_id):
-    """查詢 YouTube API 確認直播狀態
-    """
+    """查詢 YouTube API 確認直播狀態"""
     api_key = get_next_api_key()
     api_url = "https://www.googleapis.com/youtube/v3/videos"
     params = {
@@ -65,8 +62,7 @@ def get_live_video_info(video_id):
     return None
 
 def process_channel(category, channel_name, url):
-    """處理單一 YouTube 頻道頁面
-    """
+    """處理單一 YouTube 頻道頁面"""
     print(f"處理頻道：{channel_name}")
     headers = {"User-Agent": "Mozilla/5.0"}
     try:
@@ -100,8 +96,7 @@ def process_channel(category, channel_name, url):
             print(f"找到直播：{title} - {video_url}")
 
 def main():
-    """執行主程序，遍歷所有頻道
-    """
+    """執行主程式，遍歷所有頻道"""
     for category, channels in CATEGORIES.items():
         for channel_name, url in channels.items():
             process_channel(category, channel_name, url)
@@ -112,16 +107,7 @@ def main():
             for line in streams:
                 f.write(line + "\n")
             f.write("\n")
-
-    # 自動提交更新
-    os.system("git config --global user.name 'github-actions[bot]'")
-    os.system("git config --global user.email 'github-actions[bot]@users.noreply.github.com'")
-    os.system("git pull --rebase origin main || git reset --hard origin/main")
-    os.system("git add live_streams.txt")
-    os.system("git commit -m '更新直播清單'")
-    os.system("git push --force-with-lease")
-    
     print("更新完成。")
 
 if __name__ == "__main__":
-    main()
+    main()	
