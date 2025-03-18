@@ -20,7 +20,7 @@ def get_next_api_key():
 # 定義要爬取的 YouTube 頻道直播頁面
 CATEGORIES = {
     "台灣,#genre#": {
-        "台灣地震監視": "https://www.youtube.com/@台灣地震監視/streams",
+        "台視": "https://www.youtube.com/watch?v=uDqQo8a7Xmk&rco=1&ab_channel=TTVLIVE%E5%8F%B0%E8%A6%96%E7%9B%B4%E6%92%AD",
         "台視新聞": "https://www.youtube.com/@TTV_NEWS/streams",
         "中視新聞": "https://www.youtube.com/@chinatvnews/streams",
         "中視新聞 HD": "https://www.youtube.com/@twctvnews/streams",
@@ -215,7 +215,7 @@ CATEGORIES = {
     },
     "國會,#genre#": {
         "國會頻道": "https://www.youtube.com/@parliamentarytv/streams"
-    }	
+    },	
 }
 
 # 用來存儲直播結果
