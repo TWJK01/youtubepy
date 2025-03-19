@@ -3,9 +3,23 @@ import requests
 import re
 import json
 import os
+import itertools
 
-# 設定你的 YouTube Data API key
-API_KEY = os.environ.get("YOUTUBE_API_KEY", "YOUR_API_KEY")
+# 從 GitHub Secrets 讀取 API Keys
+API_KEYS = [
+    os.getenv("YOUTUBE_API_KEY_1"),
+    os.getenv("YOUTUBE_API_KEY_2"),
+]
+
+# 移除 None 值，確保 API_KEYS 都是有效的
+API_KEYS = [key for key in API_KEYS if key]
+
+# API Key 輪替迭代器
+api_key_cycle = itertools.cycle(API_KEYS)
+
+def get_next_api_key():
+    """取得下一組 API Key"""
+    return next(api_key_cycle)
 
 # 頻道分類
 CATEGORIES = {
@@ -13,7 +27,7 @@ CATEGORIES = {
         "台灣地震監視": "https://www.youtube.com/@台灣地震監視/streams"
     },
     "綜藝,#genre#": {
-        "MIT台灣誌": "https://www.youtube.com/@ctvmit/streams"      
+        "MIT台灣誌": "https://www.youtube.com/@ctvmit/streams"
     }
 }
 
@@ -31,23 +45,31 @@ def extract_video_ids(data_obj, collected):
             extract_video_ids(item, collected)
 
 def get_live_video_info(video_id):
-    api_url = "https://www.googleapis.com/youtube/v3/videos"
-    params = {
-        "id": video_id,
-        "part": "snippet,liveStreamingDetails",
-        "key": API_KEY
-    }
-    response = requests.get(api_url, params=params)
-    if response.status_code != 200:
-        return None
-    data = response.json()
-    if "items" in data and len(data["items"]) > 0:
-        item = data["items"][0]
-        if item["snippet"].get("liveBroadcastContent") == "live":
-            return item
+    """取得 YouTube 直播資訊，並輪替 API Key"""
+    for _ in range(len(API_KEYS)):  # 最多嘗試 5 次
+        api_key = get_next_api_key()
+        api_url = "https://www.googleapis.com/youtube/v3/videos"
+        params = {
+            "id": video_id,
+            "part": "snippet,liveStreamingDetails",
+            "key": api_key
+        }
+        response = requests.get(api_url, params=params)
+        
+        if response.status_code == 200:
+            data = response.json()
+            if "items" in data and len(data["items"]) > 0:
+                item = data["items"][0]
+                if item["snippet"].get("liveBroadcastContent") == "live":
+                    return item
+        elif response.status_code == 403:
+            print(f"API Key {api_key} 超出配額，切換至下一組...")
+    
+    print("所有 API Key 皆無法使用。")
     return None
 
 def process_channel(category, channel_name, url):
+    """處理指定頻道，尋找直播"""
     print(f"處理頻道：{channel_name}")
     headers = {"User-Agent": "Mozilla/5.0"}
     try:
@@ -81,6 +103,7 @@ def process_channel(category, channel_name, url):
             print(f"找到直播：{title} - {video_url}")
 
 def main():
+    """主執行函式"""
     for category, channels in CATEGORIES.items():
         for channel_name, url in channels.items():
             process_channel(category, channel_name, url)
