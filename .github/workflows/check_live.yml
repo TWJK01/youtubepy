@@ -2,8 +2,9 @@ name: Check YouTube Live Streams
 
 on:
   schedule:
-    - cron: '0 */5 * * *'  # 每 5 小時執行一次
-  workflow_dispatch:  # 允許手動執行
+    # 每5小時執行一次
+    - cron: '0 */5 * * *'
+  workflow_dispatch:
 
 jobs:
   check_live:
@@ -16,42 +17,25 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          python-version: '3.x'
 
       - name: Install Dependencies
-        run: pip install -r requirements.txt
+        run: |
+          pip install requests
 
       - name: Run live stream checker
         env:
-          YOUTUBE_API_KEY_1: ${{ secrets.YOUTUBE_API_KEY_1 }}
-          YOUTUBE_API_KEY_2: ${{ secrets.YOUTUBE_API_KEY_2 }}
-        run: python check_live.py
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+        run: |
+          python check_live.py
 
       - name: Commit changes if any
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
-          # 檢查當前 Git 狀態
-          git status
-
-          # 確保所有變更被暫存
-          git add -A
-
-          # 檢查是否有變更
-          if git diff --quiet live_streams.txt && git diff --staged --quiet live_streams.txt; then
-            echo "No changes to commit"
-            exit 0
-          fi
-
-          # 確保遠端變更與本地同步，避免衝突
-          git pull --rebase origin main || (echo "Pull failed, stashing changes and resetting to remote main" && git stash && git reset --hard origin/main)
-
+          git stash --include-untracked
+          git pull --rebase origin main
+          git stash pop || true
           git add live_streams.txt
           git commit -m "更新直播清單"
-
-          # 使用 --force-with-lease 確保不會覆蓋其他提交
           git push --force-with-lease
-
-          # 如果有暫存的變更，恢復
-          git stash pop || echo "No stashed changes"
