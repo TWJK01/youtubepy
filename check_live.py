@@ -25,17 +25,23 @@ def get_next_api_key():
 CATEGORIES = {
     "台灣,#genre#": {
         "華視新聞": "https://www.youtube.com/@CtsTw/streams",
-        "台視": "https://www.youtube.com/watch?v=uDqQo8a7Xmk&rco=1&ab_channel=TTVLIVE%E5%8F%B0%E8%A6%96%E7%9B%B4%E6%92%AD",
     },
     "少兒,#genre#": {
-        "Muse木棉花-TW": "https://www.youtube.com/@MuseTW/streams",    
-        "Muse木棉花-闔家歡": "https://www.youtube.com/@Muse_Family/streams"            
+        "Muse木棉花-TW": "https://www.youtube.com/@MuseTW/streams",
+        "Muse木棉花-闔家歡": "https://www.youtube.com/@Muse_Family/streams"          
     }
+}
 
+# 直接加入的直播連結分類
+DIRECT_LINK_CATEGORIES = {
+    "台灣,#genre#": {
+        "台視": "https://www.youtube.com/watch?v=uDqQo8a7Xmk&rco=1&ab_channel=TTVLIVE%E5%8F%B0%E8%A6%96%E7%9B%B4%E6%92%AD"
+    }
 }
 
 # 用來儲存直播結果
 live_results = {}
+
 
 def extract_video_ids(data_obj, collected):
     if isinstance(data_obj, dict):
@@ -46,10 +52,16 @@ def extract_video_ids(data_obj, collected):
     elif isinstance(data_obj, list):
         for item in data_obj:
             extract_video_ids(item, collected)
+    # 額外搜尋直播連結中的 videoId
+    if isinstance(data_obj, dict) and "url" in data_obj and "watch?v=" in data_obj["url"]:
+        match = re.search(r"watch\?v=([\w-]+)", data_obj["url"])
+        if match:
+            collected.add(match.group(1))
+
 
 def get_live_video_info(video_id):
     """取得 YouTube 直播資訊，並輪替 API Key"""
-    for _ in range(len(API_KEYS)):  # 最多嘗試 5 次
+    for _ in range(len(API_KEYS)):
         api_key = get_next_api_key()
         api_url = "https://www.googleapis.com/youtube/v3/videos"
         params = {
@@ -71,13 +83,8 @@ def get_live_video_info(video_id):
     print("所有 API Key 皆無法使用。")
     return None
 
+
 def process_channel(category, channel_name, url):
-    if channel_name == "台視":  # 直接顯示台視的直播連結
-        if category not in live_results:
-            live_results[category] = []
-        live_results[category].append(f"台視,{url}")
-        print(f"直接加入台視的直播：{url}")
-        return
     """處理指定頻道，尋找直播"""
     print(f"處理頻道：{channel_name}")
     headers = {"User-Agent": "Mozilla/5.0"}
@@ -111,8 +118,17 @@ def process_channel(category, channel_name, url):
             live_results[category].append(f"{title},{video_url}")
             print(f"找到直播：{title} - {video_url}")
 
+
 def main():
     """主執行函式"""
+    # 處理直接加入的直播連結
+    for category, channels in DIRECT_LINK_CATEGORIES.items():
+        for channel_name, url in channels.items():
+            if category not in live_results:
+                live_results[category] = []
+            live_results[category].append(f"{channel_name},{url}")
+
+    # 處理需要搜尋的頻道
     for category, channels in CATEGORIES.items():
         for channel_name, url in channels.items():
             process_channel(category, channel_name, url)
@@ -124,6 +140,7 @@ def main():
                 f.write(line + "\n")
             f.write("\n")
     print("更新完成。")
+
 
 if __name__ == "__main__":
     main()
