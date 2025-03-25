@@ -25,10 +25,11 @@ def get_next_api_key():
 CATEGORIES = {
     "台灣,#genre#": {
         "華視新聞": "https://www.youtube.com/@CtsTw/streams",
+        "台視": "https://www.youtube.com/watch?v=uDqQo8a7Xmk&rco=1&ab_channel=TTVLIVE%E5%8F%B0%E8%A6%96%E7%9B%B4%E6%92%AD",
     },
     "少兒,#genre#": {
-        "Muse木棉花-TW": "https://www.youtube.com/@MuseTW/streams",	
-        "Muse木棉花-闔家歡": "https://www.youtube.com/@Muse_Family/streams"			
+        "Muse木棉花-TW": "https://www.youtube.com/@MuseTW/streams",    
+        "Muse木棉花-闔家歡": "https://www.youtube.com/@Muse_Family/streams"            
     }
 
 }
@@ -57,7 +58,7 @@ def get_live_video_info(video_id):
             "key": api_key
         }
         response = requests.get(api_url, params=params)
-        
+
         if response.status_code == 200:
             data = response.json()
             if "items" in data and len(data["items"]) > 0:
@@ -66,11 +67,17 @@ def get_live_video_info(video_id):
                     return item
         elif response.status_code == 403:
             print(f"API Key {api_key} 超出配額，切換至下一組...")
-    
+
     print("所有 API Key 皆無法使用。")
     return None
 
 def process_channel(category, channel_name, url):
+    if channel_name == "台視":  # 直接顯示台視的直播連結
+        if category not in live_results:
+            live_results[category] = []
+        live_results[category].append(f"台視,{url}")
+        print(f"直接加入台視的直播：{url}")
+        return
     """處理指定頻道，尋找直播"""
     print(f"處理頻道：{channel_name}")
     headers = {"User-Agent": "Mozilla/5.0"}
