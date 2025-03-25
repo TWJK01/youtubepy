@@ -35,7 +35,7 @@ CATEGORIES = {
 # 直接加入的直播連結分類
 DIRECT_LINK_CATEGORIES = {
     "台灣,#genre#": {
-        "台視": "https://www.youtube.com/watch?v=uDqQo8a7Xmk&rco=1&ab_channel=TTVLIVE%E5%8F%B0%E8%A6%96%E7%9B%B4%E6%92%AD"
+        "台視": "https://www.youtube.com/live/uDqQo8a7Xmk?si=vgn1oosHGeQUAGQQ"
     }
 }
 
