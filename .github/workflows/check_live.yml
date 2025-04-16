@@ -25,8 +25,7 @@ jobs:
 
       - name: Run live stream checker
         env:
-          YOUTUBE_API_KEY_1: ${{ secrets.YOUTUBE_API_KEY_1 }}
-          YOUTUBE_API_KEY_2: ${{ secrets.YOUTUBE_API_KEY_2 }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
         run: |
           python check_live.py
 
@@ -34,5 +33,9 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git stash --include-untracked
+          git pull --rebase origin main
+          git stash pop || true
           git add live_streams.txt
-          git diff --quiet && git diff --staged --quiet || (git commit -m "更新直播清單 $(date '+%Y-%m-%d %H:%M:%S')" && git pull --rebase && git push)
+          git commit -m "更新直播清單"
+          git push --force-with-lease
