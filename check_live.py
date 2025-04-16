@@ -3,45 +3,23 @@ import requests
 import re
 import json
 import os
-import itertools
 
-# 從 GitHub Secrets 讀取 API Keys
-API_KEYS = [
-    os.getenv("YOUTUBE_API_KEY_1"),
-    os.getenv("YOUTUBE_API_KEY_2"),
-]
+# 設定你的 YouTube Data API key
+API_KEY = os.environ.get("YOUTUBE_API_KEY", "YOUR_API_KEY")
 
-# 移除 None 值，確保 API_KEYS 都是有效的
-API_KEYS = [key for key in API_KEYS if key]
-
-# API Key 輪替迭代器
-api_key_cycle = itertools.cycle(API_KEYS)
-
-def get_next_api_key():
-    """取得下一組 API Key"""
-    return next(api_key_cycle)
+if not API_KEY or API_KEY == "YOUR_API_KEY":
+    raise ValueError("請設定正確的 YouTube API 金鑰。")
 
 # 頻道分類
 CATEGORIES = {
-    "台灣,#genre#": {
-        "華視新聞": "https://www.youtube.com/@CtsTw/streams",
-    },
-    "少兒,#genre#": {
-        "Muse木棉花-TW": "https://www.youtube.com/@MuseTW/streams",
-        "Muse木棉花-闔家歡": "https://www.youtube.com/@Muse_Family/streams"          
-    }
-}
-
-# 直接加入的直播連結分類
-DIRECT_LINK_CATEGORIES = {
-    "台灣,#genre#": {
-        "台視": "https://www.youtube.com/live/uDqQo8a7Xmk?si=vgn1oosHGeQUAGQQ"
+    "音樂,#genre#": {
+        "Eight FM 线上收听！": "https://www.youtube.com/@eight-audio/streams",
+        "Hot TV": "https://www.youtube.com/@hotfm976/streams"
     }
 }
 
 # 用來儲存直播結果
 live_results = {}
-
 
 def extract_video_ids(data_obj, collected):
     if isinstance(data_obj, dict):
@@ -52,40 +30,25 @@ def extract_video_ids(data_obj, collected):
     elif isinstance(data_obj, list):
         for item in data_obj:
             extract_video_ids(item, collected)
-    # 額外搜尋直播連結中的 videoId
-    if isinstance(data_obj, dict) and "url" in data_obj and "watch?v=" in data_obj["url"]:
-        match = re.search(r"watch\?v=([\w-]+)", data_obj["url"])
-        if match:
-            collected.add(match.group(1))
-
 
 def get_live_video_info(video_id):
-    """取得 YouTube 直播資訊，並輪替 API Key"""
-    for _ in range(len(API_KEYS)):
-        api_key = get_next_api_key()
-        api_url = "https://www.googleapis.com/youtube/v3/videos"
-        params = {
-            "id": video_id,
-            "part": "snippet,liveStreamingDetails",
-            "key": api_key
-        }
-        response = requests.get(api_url, params=params)
-
-        if response.status_code == 200:
-            data = response.json()
-            if "items" in data and len(data["items"]) > 0:
-                item = data["items"][0]
-                if item["snippet"].get("liveBroadcastContent") == "live":
-                    return item
-        elif response.status_code == 403:
-            print(f"API Key {api_key} 超出配額，切換至下一組...")
-
-    print("所有 API Key 皆無法使用。")
+    api_url = "https://www.googleapis.com/youtube/v3/videos"
+    params = {
+        "id": video_id,
+        "part": "snippet,liveStreamingDetails",
+        "key": API_KEY
+    }
+    response = requests.get(api_url, params=params)
+    if response.status_code != 200:
+        return None
+    data = response.json()
+    if "items" in data and len(data["items"]) > 0:
+        item = data["items"][0]
+        if item["snippet"].get("liveBroadcastContent") == "live":
+            return item
     return None
 
-
 def process_channel(category, channel_name, url):
-    """處理指定頻道，尋找直播"""
     print(f"處理頻道：{channel_name}")
     headers = {"User-Agent": "Mozilla/5.0"}
     try:
@@ -112,23 +75,14 @@ def process_channel(category, channel_name, url):
         info = get_live_video_info(vid)
         if info:
             title = info["snippet"].get("title", "無標題")
+            sanitized_title = title.replace(",", "")  # 移除逗號
             video_url = f"https://www.youtube.com/watch?v={vid}"
             if category not in live_results:
                 live_results[category] = []
-            live_results[category].append(f"{title},{video_url}")
-            print(f"找到直播：{title} - {video_url}")
-
+            live_results[category].append(f"{sanitized_title},{video_url}")
+            print(f"找到直播：{sanitized_title} - {video_url}")
 
 def main():
-    """主執行函式"""
-    # 處理直接加入的直播連結
-    for category, channels in DIRECT_LINK_CATEGORIES.items():
-        for channel_name, url in channels.items():
-            if category not in live_results:
-                live_results[category] = []
-            live_results[category].append(f"{channel_name},{url}")
-
-    # 處理需要搜尋的頻道
     for category, channels in CATEGORIES.items():
         for channel_name, url in channels.items():
             process_channel(category, channel_name, url)
@@ -140,7 +94,6 @@ def main():
                 f.write(line + "\n")
             f.write("\n")
     print("更新完成。")
-
 
 if __name__ == "__main__":
     main()
