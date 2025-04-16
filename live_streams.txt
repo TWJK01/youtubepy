@@ -1,8 +1,3 @@
-台灣,#genre#
-台視,https://www.youtube.com/live/uDqQo8a7Xmk?si=vgn1oosHGeQUAGQQ
-地震即時警報與監測直播｜華視公眾安全資訊觀測站,https://www.youtube.com/watch?v=7lxXN3zIr-I
-
-少兒,#genre#
-《擁有超常技能的異世界流浪美食家》馬拉松直播🍗 第二季將於2025播出！｜Muse木棉花,https://www.youtube.com/watch?v=8Icr_SuXPDc
-《我們這一家》🍢馬拉松直播｜Muse木棉花 闔家歡 免費看,https://www.youtube.com/watch?v=WHednLn-HjA
+音樂,#genre#
+🔥🎵 #KJJadiDJ 🎧 Layan Strim Hot FM Stesen Radio No. 1 Di Malaysia! 🔥🔥🔥,https://www.youtube.com/watch?v=ulcLwqt9_7k
 
